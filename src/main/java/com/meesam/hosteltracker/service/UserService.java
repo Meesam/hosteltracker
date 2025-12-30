@@ -5,15 +5,15 @@ import com.meesam.hosteltracker.dto.UserResponse;
 import com.meesam.hosteltracker.model.User;
 import com.meesam.hosteltracker.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService  {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponse createUser(UserRequest userRequest){
         User user = new User();
@@ -21,6 +21,9 @@ public class UserService implements UserDetailsService {
         user.setEmail(userRequest.email());
         user.setPhone(userRequest.phone());
         user.setDob(userRequest.dob());
+        String password = "SecureRandomPassword";
+        String encodedPassword = passwordEncoder.encode(password);
+        user.setPassword(encodedPassword);
         User savedUser = userRepository.save(user);
         return new UserResponse(
                 savedUser.getId(),
@@ -37,8 +40,9 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+    public Optional<User> findUserByPhoneNumber(String phone){
+        return userRepository.findByPhone(phone);
     }
+
+
 }
