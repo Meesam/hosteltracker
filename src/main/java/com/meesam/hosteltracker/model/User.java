@@ -26,6 +26,12 @@ public class User extends BaseEntity {
     @Column(nullable = true)
     private String email;
 
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
+    private String role = "User";
+
     @Column(nullable = true)
     private LocalDateTime dob;
 

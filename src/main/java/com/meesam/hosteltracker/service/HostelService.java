@@ -14,9 +14,19 @@ public class HostelService {
 
     private final HostelRepository hostelRepository;
 
-    public HostelResponse createHostel(HostelRequest hostelRequest){
-        Hostel hostel = new Hostel();
-        hostel.setAddress(hostelRequest.address());
+    public HostelResponse createHostel(HostelRequest hostelRequest) {
+        Hostel hostel = Hostel.builder()
+                .name(hostelRequest.name())
+                .description(hostelRequest.description())
+                .address(hostelRequest.address())
+                .state(hostelRequest.state())
+                .city(hostelRequest.city())
+                .pinCode(hostelRequest.pinCode())
+                .country(hostelRequest.country())
+                .contactPerson(hostelRequest.contactPerson())
+                .contactNumber(hostelRequest.contactNumber())
+                .build();
+        /*hostel.setAddress(hostelRequest.address());
         hostel.setCity(hostelRequest.city());
         hostel.setState(hostelRequest.state());
         hostel.setCountry(hostelRequest.country());
@@ -24,7 +34,7 @@ public class HostelService {
         hostel.setContactPerson(hostelRequest.contactPerson());
         hostel.setContactNumber(hostelRequest.contactNumber());
         hostel.setName(hostelRequest.name());
-        hostel.setDescription(hostelRequest.description());
+        hostel.setDescription(hostelRequest.description());*/
         Hostel savedHostel = hostelRepository.save(hostel);
         return HostelResponse.builder()
                 .id(savedHostel.getId())

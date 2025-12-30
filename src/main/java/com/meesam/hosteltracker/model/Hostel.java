@@ -1,9 +1,7 @@
 package com.meesam.hosteltracker.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -11,6 +9,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Hostel extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
