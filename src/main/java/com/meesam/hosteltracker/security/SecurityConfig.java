@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN") // Restricted to ADMIN
-                        .requestMatchers("/api/orders/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/refresh/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

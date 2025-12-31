@@ -4,6 +4,7 @@ import com.meesam.hosteltracker.dto.*;
 import com.meesam.hosteltracker.model.User;
 import com.meesam.hosteltracker.security.JwtService;
 import com.meesam.hosteltracker.service.OtpService;
+import com.meesam.hosteltracker.service.RefreshTokenService;
 import com.meesam.hosteltracker.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import java.util.Map;
 import java.util.Optional;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -28,6 +30,7 @@ import java.util.Optional;
 public class AuthController {
     private final UserService userService;
     private final OtpService otpService;
+    private final RefreshTokenService refreshTokenService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -44,7 +47,7 @@ public class AuthController {
     }
 
     @PostMapping("/generateOtp")
-    public ResponseEntity<OtpResponse> generateOtp(@RequestBody LoginRequest request) {
+    public ResponseEntity<OtpResponse> generateOtp(@Valid @RequestBody LoginRequest request) {
         Optional<User> userDetail = userService.findUserByPhoneNumber(request.phone());
         if (userDetail.isPresent()) {
             User user = userDetail.get();
@@ -60,19 +63,50 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody OtpRequest request) {
-        String mobileNumber = otpService.getMobileNumberFromOtp(request.getOtp());
-        // 2. Fetch UserDetails to generate the token
-        UserDetails userDetails = userDetailsService.loadUserByUsername(mobileNumber);
+    public ResponseEntity<?> login(@Valid @RequestBody OtpRequest request) {
+        String phone = otpService.getMobileNumberFromOtp(request.getOtp());
+        if (phone == null) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Invalid or expired OTP. Please try again."));
+        }
+
+        //Fetch UserDetails to generate the token
+        UserDetails userDetails = userDetailsService.loadUserByUsername(phone);
+
         // 3. Manually create the Authentication object
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities()
         );
-        // 4. Set it in the Security Context
+
+        //Set it in the Security Context
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        // 3. Generate the JWT
+
+        //Generate the JWT
         String token = jwtService.generateToken(userDetails);
-        // 4. Return the Record as JSON
-        return ResponseEntity.ok(new AuthResponse(token));
+
+        // Get User info from userDetails
+        if (userDetails instanceof User userEntity) {
+            //Generate refresh token and save it to db and also send it in response
+            String refreshToken = jwtService.generateRefreshToken(userDetails);
+            RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest(
+                    refreshToken, userEntity.getId(), userEntity.getPhone()
+            );
+            refreshTokenService.saveRefreshToken(refreshTokenRequest);
+
+            UserResponse user = new UserResponse(
+                    userEntity.getId(),
+                    userEntity.getName(),
+                    userEntity.getPhone(),
+                    userEntity.getEmail(),
+                    userEntity.getDob(),
+                    userEntity.getLastLoginAt()
+            );
+            // 4. Return the Record as JSON
+            return new ResponseEntity<>(new AuthResponse(token, refreshToken, user), HttpStatus.OK);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("message", "No record found"));
     }
+
 }

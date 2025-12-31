@@ -40,7 +40,7 @@ public class JpaConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return phone -> userRepository.findByPhone(phone) // or findByUsername
+        return phone -> userRepository.findByPhone(phone)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with phone: " + phone));
     }
 }

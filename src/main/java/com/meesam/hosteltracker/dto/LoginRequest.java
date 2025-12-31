@@ -1,4 +1,9 @@
 package com.meesam.hosteltracker.dto;
 
-public record LoginRequest(String phone) {
+import jakarta.validation.constraints.NotBlank;
+
+public record LoginRequest(
+        @NotBlank(message = "Phone number is required.")
+        String phone
+) {
 }

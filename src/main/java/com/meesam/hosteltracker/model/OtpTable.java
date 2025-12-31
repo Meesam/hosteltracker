@@ -2,7 +2,6 @@ package com.meesam.hosteltracker.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -24,7 +23,7 @@ public class OtpTable {
     private String phone;
 
     @Column(nullable = false)
-    private Integer Otp;
+    private Integer otp;
 
     @Column(nullable = false)
     private LocalDateTime expiresAt;

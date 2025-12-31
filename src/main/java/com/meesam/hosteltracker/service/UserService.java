@@ -30,13 +30,14 @@ public class UserService  {
                 savedUser.getName(),
                 savedUser.getPhone(),
                 savedUser.getEmail(),
-                savedUser.getCreatedAt(),
-                savedUser.getIsActive(),
-                savedUser.getIsActivatedByOtp(),
-                savedUser.getUpdatedAt(),
+               // savedUser.getCreatedAt(),
+               // savedUser.getIsActive(),
+               // savedUser.getIsActivatedByOtp(),
+               // savedUser.getUpdatedAt(),
                 savedUser.getDob(),
-                savedUser.getCreatedBy(),
-                savedUser.getLastModifiedBy()
+                //savedUser.getCreatedBy(),
+                //savedUser.getLastModifiedBy(),
+                savedUser.getLastLoginAt()
         );
     }
 

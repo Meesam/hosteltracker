@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/hostel")
+@RequestMapping("/api/admin/hostel")
 @RequiredArgsConstructor
 public class HostelController {
     private final HostelService hostelService;

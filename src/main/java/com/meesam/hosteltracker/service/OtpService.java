@@ -22,7 +22,7 @@ public class OtpService {
         }
 
         OtpTable otpTable = OtpTable.builder()
-                .Otp(OtpGenerator.generateOtp())
+                .otp(OtpGenerator.generateOtp())
                 .userId(otpRequest.getUserId())
                 .phone(otpRequest.getPhone())
                 .createdAt(LocalDateTime.now())
@@ -35,7 +35,7 @@ public class OtpService {
     }
 
     public String getMobileNumberFromOtp(int otp) {
-        Optional<OtpTable> otpTable = otpRepository.findByOtp(otp);
+        Optional<OtpTable> otpTable = otpRepository.findByOtp(otp, LocalDateTime.now());
         if (otpTable.isPresent()) {
             OtpTable opt = otpTable.get();
             return opt.getPhone();

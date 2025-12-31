@@ -1,7 +1,6 @@
 package com.meesam.hosteltracker.dto;
 
 import jakarta.validation.constraints.NotBlank;
-
 import java.time.LocalDateTime;
 
 public record UserRequest(

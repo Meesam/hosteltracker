@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException; // Only use the standard Java IO import
+import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -26,11 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain
-    ) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
@@ -41,30 +37,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        try {
+            jwt = authHeader.substring(7);
+            username = jwtService.extractUsername(jwt);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
-        // 2. Extract Token and Username
-        jwt = authHeader.substring(7);
-        username = jwtService.extractUsername(jwt);
-
-        // 3. If username exists and user isn't already authenticated in this context
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-
-            // 4. Validate token
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-
-                // 5. Build extra details (IP, Session info) from the request
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                // 6. Finalize Authentication
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
+            filterChain.doFilter(request, response);
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            handleException(response, "Token has expired. Please refresh.", HttpServletResponse.SC_UNAUTHORIZED);
+        } catch (io.jsonwebtoken.security.SignatureException e) {
+            handleException(response, "Invalid token signature.", HttpServletResponse.SC_FORBIDDEN);
+        } catch (Exception e) {
+            handleException(response, "Token validation failed.", HttpServletResponse.SC_FORBIDDEN);
         }
-        filterChain.doFilter(request, response);
+    }
+
+    private void handleException(HttpServletResponse response, String message, int status) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json");
+        String jsonResponse = String.format("{\"error\": \"%s\", \"status\": %d}", message, status);
+        response.getWriter().write(jsonResponse);
     }
 }
