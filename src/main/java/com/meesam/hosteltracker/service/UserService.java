@@ -55,10 +55,10 @@ public class UserService  {
         return userRepository.findByPhone(phone);
     }
 
-    public User getUserAndAddressByUserId(UUID id){
-        return userRepository.findByIdWithUserAddress(id)
-                .orElseThrow(()->new RuntimeException("User not found"));
-    }
+   // public User getUserAndAddressByUserId(UUID id){
+       // return userRepository.findByIdWithUserAddress(id)
+               // .orElseThrow(()->new RuntimeException("User not found"));
+  //  }
 
     public List<UserResponse> getAllUsersWithAddresses() {
         return userRepository.findAllWithUserAddresses().stream()

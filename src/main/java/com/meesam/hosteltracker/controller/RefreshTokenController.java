@@ -66,7 +66,8 @@ public class RefreshTokenController {
                         userEntity.getEmail(),
                         userEntity.getDob(),
                         userEntity.getProfilePicturePath(),
-                        userEntity.getLastLoginAt()
+                        userEntity.getLastLoginAt(),
+                        null
                 );
                 return new ResponseEntity<>(new AuthResponse(token, refreshToken, user), HttpStatus.OK);
             }
@@ -80,7 +81,8 @@ public class RefreshTokenController {
                         userEntity.getEmail(),
                         userEntity.getDob(),
                         userEntity.getProfilePicturePath(),
-                        userEntity.getLastLoginAt()
+                        userEntity.getLastLoginAt(),
+                        null
                 );
                 return new ResponseEntity<>(new AuthResponse(token, refreshTokenRequest.tokenHash(), user), HttpStatus.OK);
             }
