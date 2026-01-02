@@ -1,9 +1,7 @@
 package com.meesam.hosteltracker.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -11,6 +9,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @Entity
+@Builder
+@AllArgsConstructor
 public class UserAddress extends BaseEntity{
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
@@ -25,9 +25,13 @@ public class UserAddress extends BaseEntity{
   private String state;
 
   @Column(nullable = false)
-  private String Country;
+  private String country;
 
   @Column(nullable = false)
   private int pinCode;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "users_id")
+  private User users;
 
 }

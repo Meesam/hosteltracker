@@ -100,7 +100,9 @@ public class AuthController {
                     userEntity.getPhone(),
                     userEntity.getEmail(),
                     userEntity.getDob(),
-                    userEntity.getLastLoginAt()
+                    userEntity.getProfilePicturePath(),
+                    userEntity.getLastLoginAt(),
+                    null
             );
             // 4. Return the Record as JSON
             return new ResponseEntity<>(new AuthResponse(token, refreshToken, user), HttpStatus.OK);

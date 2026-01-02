@@ -11,6 +11,7 @@ public record UserRequest(
         String phone,
 
         String email,
-        LocalDateTime dob
+        LocalDateTime dob,
+        String profilePicturePath
 ) {
 }

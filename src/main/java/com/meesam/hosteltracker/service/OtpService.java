@@ -5,6 +5,7 @@ import com.meesam.hosteltracker.dto.OtpResponse;
 import com.meesam.hosteltracker.model.OtpTable;
 import com.meesam.hosteltracker.repository.OtpRepository;
 import com.meesam.hosteltracker.util.OtpGenerator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class OtpService {
     private final OtpRepository otpRepository;
 

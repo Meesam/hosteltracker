@@ -3,6 +3,8 @@ package com.meesam.hosteltracker.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -42,4 +44,7 @@ public class Hostel extends BaseEntity{
 
     @Column(nullable = false)
     private String contactNumber;
+
+    @OneToMany(mappedBy = "hostel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HostelImages> hostelImages = new ArrayList<>();
 }

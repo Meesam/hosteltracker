@@ -3,6 +3,7 @@ package com.meesam.hosteltracker.service;
 import com.meesam.hosteltracker.dto.RefreshTokenRequest;
 import com.meesam.hosteltracker.model.RefreshTokens;
 import com.meesam.hosteltracker.repository.RefreshTokenRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class RefreshTokenService {
   private final RefreshTokenRepository refreshTokenRepository;
 

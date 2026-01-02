@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface HostelRepository extends JpaRepository<Hostel, UUID> {
-    Page<Hostel> findByNameContainingIgnoreCase(String searchStr, Pageable pageable);
+    //Page<Hostel> findByNameContainingIgnoreCase(String searchStr, Pageable pageable);
 }

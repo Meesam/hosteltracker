@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -31,6 +32,8 @@ public class User extends BaseEntity implements UserDetails {
 
     private String email;
 
+    private String profilePicturePath;
+
     @Column(nullable = false)
     private String password;
 
@@ -46,6 +49,9 @@ public class User extends BaseEntity implements UserDetails {
     private  Boolean isActivatedByOtp = false;
 
     private LocalDateTime lastLoginAt;
+
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserAddress> userAddresses = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

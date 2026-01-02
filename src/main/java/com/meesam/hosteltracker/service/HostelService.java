@@ -4,6 +4,7 @@ import com.meesam.hosteltracker.dto.HostelRequest;
 import com.meesam.hosteltracker.dto.HostelResponse;
 import com.meesam.hosteltracker.model.Hostel;
 import com.meesam.hosteltracker.repository.HostelRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class HostelService {
 
     private final HostelRepository hostelRepository;
